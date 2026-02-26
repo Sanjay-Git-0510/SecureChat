@@ -1,0 +1,13 @@
+/* Chat layout — sidebar left, chat right */
+.chat-layout {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .chat-layout { flex-direction: column; }
+  .sidebar { width: 100% !important; min-width: unset !important; height: 250px !important; border-right: none; border-bottom: 1px solid var(--border); }
+}
