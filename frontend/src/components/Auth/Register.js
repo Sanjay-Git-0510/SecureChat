@@ -37,7 +37,7 @@ const Register = () => {
       <div className="auth-container fade-in">
         <div className="auth-brand">
           <div className="auth-logo">⚡</div>
-          <h1>NexusChat</h1>
+          <h1>SecureChat</h1>
           <p>Create your account</p>
         </div>
         <form onSubmit={handleSubmit} className="auth-form">

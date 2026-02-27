@@ -86,7 +86,7 @@ const AdminDashboard = () => {
       <header className="admin-header">
         <div className="admin-brand">
           <span className="brand-icon">⚡</span>
-          <h1>NexusChat Admin</h1>
+          <h1>SecureChat Admin</h1>
         </div>
         <div className="admin-header-right">
           <span className="admin-user-tag">👑 {user?.username}</span>

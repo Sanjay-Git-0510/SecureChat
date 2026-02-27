@@ -5,7 +5,7 @@ import { messagesAPI }    from '../../services/api';
 import { format, isToday, isYesterday } from 'date-fns';
 import Avatar             from '../UI/Avatar';
 import toast              from 'react-hot-toast';
-import './ChatWindow.css';
+
 
 const TYPING_DELAY = 1500;
 
@@ -85,33 +85,44 @@ const DateDivider = ({ date }) => {
 };
 
 /* ─── Welcome screen (no chat selected) ─── */
-const WelcomeScreen = () => (
+const WelcomeScreen = ({ username }) => (
   <div className="cw-welcome">
     <div className="cw-welcome-inner">
-      <div className="cw-welcome-icon">💬</div>
-      <h2>Welcome to NexusChat ⚡</h2>
-      <p className="cw-welcome-sub">Real-time messaging — select a chat or room to begin</p>
+      <div className="cw-eyebrow">⚡ Real-time Chat</div>
+      <h2 className="cw-welcome-title">
+        Welcome back{username ? `, ${username}` : ''}!
+      </h2>
+      <p className="cw-welcome-sub">
+        Select a conversation from the sidebar, or start a new one below.
+      </p>
 
+      <p className="cw-steps-label">How to use NexusChat</p>
       <div className="cw-steps">
         <div className="cw-step">
-          <div className="cw-step-icon">👤</div>
+          <div className="cw-step-num" style={{background:'linear-gradient(135deg,#6979f8,#a78bfa)'}}>1</div>
           <div className="cw-step-body">
-            <strong>Direct Message</strong>
-            <span>Click the <em>People</em> tab → click any user → type &amp; send</span>
+            <div className="cw-step-title">Send a Direct Message</div>
+            <div className="cw-step-desc">
+              Click the <em>People</em> tab on the left → select any user → type your message and press <em>Enter</em> to send instantly
+            </div>
           </div>
         </div>
         <div className="cw-step">
-          <div className="cw-step-icon">💬</div>
+          <div className="cw-step-num" style={{background:'linear-gradient(135deg,#2dd4a0,#06b6d4)'}}>2</div>
           <div className="cw-step-body">
-            <strong>Group Room</strong>
-            <span>Click the <em>Rooms</em> tab → click a room to <em>Join</em> or click<em> Create a Room</em></span>
+            <div className="cw-step-title">Join or Create a Room</div>
+            <div className="cw-step-desc">
+              Click the <em>Rooms</em> tab → click any room marked <em>Tap to Join</em>, or click <em>Create a Room</em> to start your own group chat
+            </div>
           </div>
         </div>
         <div className="cw-step">
-          <div className="cw-step-icon">👥</div>
+          <div className="cw-step-num" style={{background:'linear-gradient(135deg,#f04f70,#f59e0b)'}}>3</div>
           <div className="cw-step-body">
-            <strong>Need someone to chat with?</strong>
-            <span>Open an incognito window → <code>localhost:3000/register</code> → create account → they appear in People instantly</span>
+            <div className="cw-step-title">Chat in Real-time</div>
+            <div className="cw-step-desc">
+              Experience lightning-fast communication with secure, real-time message delivery designed for effortless conversations.
+            </div>
           </div>
         </div>
       </div>
@@ -218,7 +229,7 @@ const ChatWindow = () => {
   const typingList = Object.values(typingUsers).filter(Boolean);
 
   /* ── No chat selected ── */
-  if (!activeChat) return <WelcomeScreen />;
+  if (!activeChat) return <WelcomeScreen username={user?.username} />;
 
   const isRoom   = activeChat.type === 'room';
   const chatName = isRoom ? activeChat.data.name : activeChat.data.username;

@@ -5,7 +5,6 @@ import { useTheme } from '../../context/ThemeContext';
 import { roomsAPI } from '../../services/api';
 import toast        from 'react-hot-toast';
 import Avatar       from '../UI/Avatar';
-import './Sidebar.css';
 
 /* ══════════════════════════════════════
    CREATE ROOM MODAL
@@ -137,7 +136,7 @@ const Sidebar = () => {
         <div className="sb-header">
           <div className="sb-brand">
             <span className="sb-brand-icon">⚡</span>
-            <span className="sb-brand-name">NexusChat</span>
+            <span className="sb-brand-name">SecureChat</span>
           </div>
           <div className="sb-header-right">
             <button className="sb-theme-btn" onClick={toggleTheme} title="Toggle theme">
@@ -232,8 +231,10 @@ const Sidebar = () => {
             <>
               {loadingData ? (
                 <Skeletons />
-              ) : filtUsers.length === 0 ? (
+              ) : (filtUsers.length === 0 && !search.trim()) ? (
                 <EmptyPeople />
+              ) : filtUsers.length === 0 ? (
+                <SearchNotFound query={search} type="person" />
               ) : (
                 <>
                   {onlineList.length > 0 && (
@@ -301,8 +302,10 @@ const Sidebar = () => {
 
               {loadingData ? (
                 <Skeletons count={3} />
-              ) : filtRooms.length === 0 ? (
+              ) : (filtRooms.length === 0 && !search.trim()) ? (
                 <EmptyRooms />
+              ) : filtRooms.length === 0 ? (
+                <SearchNotFound query={search} type="room" />
               ) : (
                 <>
                   <div className="sb-section-label">
@@ -346,6 +349,25 @@ const Skeletons = ({ count = 5 }) => (
     {[...Array(count)].map((_, i) => (
       <div key={i} className="sb-skeleton" style={{ animationDelay: `${i * 0.07}s` }} />
     ))}
+  </div>
+);
+
+/* ─── Search not found ─── */
+const SearchNotFound = ({ query, type }) => (
+  <div className="sb-empty">
+    <span className="sb-empty-icon">🔍</span>
+    <p className="sb-empty-title">
+      No {type === 'room' ? 'rooms' : 'users'} found
+    </p>
+    <p className="sb-empty-hint">
+      No {type === 'room' ? 'room' : 'user'} matching{' '}
+      <strong style={{color:'var(--accent)'}}>&ldquo;{query}&rdquo;</strong>
+      <br />
+      {type === 'person'
+        ? 'Try a different name or email'
+        : <>Try a different name or <strong>create this room</strong></>
+      }
+    </p>
   </div>
 );
 
