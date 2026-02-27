@@ -12,39 +12,47 @@ dotenv.config();
 const app    = express();
 const server = http.createServer(app);
 
+// Allow localhost for dev + Vercel URL for prod
+const allowedOrigins = [
+  'http://localhost:3000',
+  process.env.CLIENT_URL,
+].filter(Boolean);
+
 const io = new Server(server, {
   cors: {
-    origin:      process.env.CLIENT_URL || 'http://localhost:3000',
-    methods:     ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: allowedOrigins,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   },
 });
 
 app.use(cors({
-  origin:      process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error(`CORS blocked: ${origin}`));
+  },
   credentials: true,
 }));
+
 app.use(express.json());
 
-// ── Register ALL models BEFORE anything else touches them ──
 const User    = require('./models/User');
 const Room    = require('./models/Room');
 const Message = require('./models/Message');
 
-// Quick sanity check — will throw loud errors on startup if models broke
 console.log('Models loaded:', !!User.find, !!Room.find, !!Message.find);
 
-// ── Routes ──
 app.use('/api/auth',     require('./routes/auth'));
 app.use('/api/users',    require('./routes/users'));
 app.use('/api/messages', require('./routes/messages'));
 app.use('/api/rooms',    require('./routes/rooms'));
 app.use('/api/admin',    require('./routes/admin'));
 
-// ── Socket.IO ──
 require('./socket/socketHandler')(io);
 
-app.get('/', (_req, res) => res.json({ message: 'NexusChat API 🚀' }));
+// Health check endpoint — keeps Render service alive
+app.get('/', (_req, res) => res.json({ message: 'NexusChat API 🚀', status: 'ok' }));
 
 mongoose
   .connect(process.env.MONGO_URI)
